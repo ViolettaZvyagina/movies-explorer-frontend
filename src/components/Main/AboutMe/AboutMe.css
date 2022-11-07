@@ -70,7 +70,7 @@
   cursor: pointer;
 }
 
-@media screen and (max-width: 1000px) {
+@media screen and (max-width: 1200px) {
   .about-me__content {
     max-width: 668px;
     grid-template-columns: minmax(292px, 364px) 255px;
@@ -99,7 +99,7 @@
   }
 }
 
-@media screen and (max-width: 580px) {
+@media screen and (max-width: 760px) {
   .about-me {
     padding-top: 19px;
   }

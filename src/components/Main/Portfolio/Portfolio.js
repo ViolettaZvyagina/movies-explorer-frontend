@@ -8,18 +8,24 @@ function Portfolio() {
       <ul className="portfolio__list">
         <li className="portfolio__list-element">
           <a href="https://github.com/ViolettaZvyagina/how-to-learn" className="portfolio__list-link"
-             target="_blank" rel="noreferrer">Статичный сайт</a>
-          <img src={arrow} alt="стрелка" className="portfolio__list-image"/>
+            target="_blank" rel="noreferrer">
+            <p className="portfolio__list-text">Статичный сайт</p>
+            <img src={arrow} alt="стрелка" className="portfolio__list-image"/>
+          </a>
         </li>
         <li className="portfolio__list-element">
           <a href="https://github.com/ViolettaZvyagina/russian-travel" className="portfolio__list-link"
-             target="_blank" rel="noreferrer">Адаптивный сайт</a>
-          <img src={arrow} alt="стрелка" className="portfolio__list-image"/>
+            target="_blank" rel="noreferrer">
+            <p className="portfolio__list-text">Адаптивный сайт</p>
+            <img src={arrow} alt="стрелка" className="portfolio__list-image"/>
+          </a>
         </li>
         <li className="portfolio__list-element">
           <a href="https://github.com/ViolettaZvyagina/react-mesto-api-full" className="portfolio__list-link"
-             target="_blank" rel="noreferrer">Одностраничное приложение</a>
-          <img src={arrow} alt="стрелка" className="portfolio__list-image"/>
+            target="_blank" rel="noreferrer">
+            <p className="portfolio__list-text">Одностраничное приложение</p>
+            <img src={arrow} alt="стрелка" className="portfolio__list-image"/>
+          </a>
         </li>
       </ul>
     </section>

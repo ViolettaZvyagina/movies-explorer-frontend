@@ -96,7 +96,7 @@
   cursor: pointer;
 }
 
-@media screen and (max-width: 1150px) {
+@media screen and (max-width: 1200px) {
   .movies-card {
     max-width: 339px;
   }
@@ -106,7 +106,7 @@
   }
 }
 
-@media screen and (max-width: 580px) {
+@media screen and (max-width: 760px) {
   .movies-card {
     max-width: 300px;
   }

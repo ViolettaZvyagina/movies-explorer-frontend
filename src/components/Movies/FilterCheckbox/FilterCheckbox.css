@@ -50,7 +50,7 @@
   background-image: url("../../../images/FilterCheckbox/filter-checkbox.svg");
 }
 
-@media screen and (max-width: 1000px) {
+@media screen and (max-width: 1200px) {
   .filter-checkbox__label {
     margin: 37px auto 57px auto;
   }
@@ -59,7 +59,7 @@
   }
 }
 
-@media screen and (max-width: 580px) {
+@media screen and (max-width: 760px) {
   .filter-checkbox__label {
     margin: 43px auto 41px auto;
   }

@@ -67,13 +67,13 @@
   cursor: pointer;
 }
 
-@media screen and (max-width: 1000px) {
+@media screen and (max-width: 1200px) {
   .footer {
     max-width: 708px;
   }
 }
 
-@media screen and (max-width: 580px) {
+@media screen and (max-width: 760px) {
   .footer {
     max-width: 300px;
   }

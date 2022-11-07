@@ -10,7 +10,7 @@ function SavedMovies({
   onOverlayClose
 }) {
   return (
-    <section className='saved-movies'>
+    <main className="content">
       <Header
         isNavigationPopupOpen={isNavigationPopupOpen}
         isOpen={isOpen}
@@ -20,7 +20,7 @@ function SavedMovies({
       <SearchForm />
       <MoviesCardList />
       <Footer />
-    </section>
+    </main>
   );
 }
 

@@ -123,7 +123,7 @@
   align-items: center;
 }
 
-@media screen and (max-width: 1000px) {
+@media screen and (max-width: 1200px) {
   .about-project__content {
     max-width: 668px;
   }
@@ -148,7 +148,7 @@
   }
 }
 
-@media screen and (max-width: 580px) {
+@media screen and (max-width: 760px) {
   .about-project {
     padding-top: 20px;
   }

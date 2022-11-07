@@ -28,7 +28,7 @@
   text-align: center;
 }
 
-@media screen and (max-width: 1000px) {
+@media screen and (max-width: 1200px) {
   .promo__content {
     background-position: center 224px;
     min-height: 784px;
@@ -38,7 +38,7 @@
   }
 }
 
-@media screen and (max-width: 580px) {
+@media screen and (max-width: 760px) {
   .promo__content {
     background-position: center 142px;
     background-size: 248px;

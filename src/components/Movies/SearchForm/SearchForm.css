@@ -54,7 +54,7 @@
   cursor: pointer;
 }
 
-@media screen and (max-width: 1000px) {
+@media screen and (max-width: 1200px) {
   .search-form {
     max-width: 705px;
     padding: 60px 0 0;
@@ -62,7 +62,7 @@
   }
 }
 
-@media screen and (max-width: 580px) {
+@media screen and (max-width: 760px) {
   .search-form {
     max-width: 292px;
   }

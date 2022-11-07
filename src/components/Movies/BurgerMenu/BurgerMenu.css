@@ -3,7 +3,7 @@
 }
 
 
-@media screen and (max-width: 1000px) {
+@media screen and (max-width: 1200px) {
   .burger-menu {
     width: 44px;
     height: 44px;
@@ -22,7 +22,7 @@
   }
 }
 
-@media screen and (max-width: 580px) {
+@media screen and (max-width: 760px) {
   .burger-menu {
     width: 35px;
     height: 43px;

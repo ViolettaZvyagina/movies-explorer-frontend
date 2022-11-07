@@ -11,7 +11,7 @@ function Movies({
   onOverlayClose
 }) {
   return (
-    <section className='movies'>
+    <main className="content">
       <Header
         isNavigationPopupOpen={isNavigationPopupOpen}
         isOpen={isOpen}
@@ -22,7 +22,7 @@ function Movies({
       <MoviesCardList />
       <MoviesMore />
       <Footer />
-    </section>
+      </main>
   );
 }
 
