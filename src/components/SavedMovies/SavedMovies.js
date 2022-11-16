@@ -1,5 +1,6 @@
 import Header from '../Header/Header';
 import MoviesCardList from '../Movies/MoviesCardList/MoviesCardList';
+import MoviesMore from '../Movies/MoviesMore/MoviesMore';
 import SearchForm from '../Movies/SearchForm/SearchForm';
 import Footer from '../Footer/Footer';
 
@@ -7,7 +8,9 @@ function SavedMovies({
   isNavigationPopupOpen,
   isOpen,
   onClose,
-  onOverlayClose
+  onOverlayClose,
+  movieCards,
+  cards
 }) {
   return (
     <main className="content">
@@ -18,7 +21,10 @@ function SavedMovies({
         onOverlayClose={onOverlayClose}
       />
       <SearchForm />
-      <MoviesCardList />
+      <MoviesCardList
+        movieCards={movieCards}
+        cards={cards}
+      />
       <Footer />
     </main>
   );

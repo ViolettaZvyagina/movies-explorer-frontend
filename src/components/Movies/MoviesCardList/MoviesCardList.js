@@ -1,13 +1,15 @@
 import './MoviesCardList.css';
 import MoviesCard from '../MoviesCard/MoviesCard';
-import movies from '../../../utils/Movies';
+// import movies from '../../../utils/Movies';
 
-function MoviesCardList() {
+function MoviesCardList({ /*movieCards,*/ cards, searchMovie, moviesRoute}) {
+
   return (
     <ul className='movies-card-list'>
-      { movies.map((movie) => <MoviesCard
+      { searchMovie.slice(0, cards).map((movie) => <MoviesCard
         movie={movie}
-        key={ movie._id }
+        key={movie.id || movie._id}
+        moviesRoute={moviesRoute}
         />) }
     </ul>
   );
