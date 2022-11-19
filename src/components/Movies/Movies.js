@@ -1,10 +1,8 @@
 import { useEffect, useState } from 'react';
-import { useRouteMatch } from 'react-router-dom';
 import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
 import SearchForm from './SearchForm/SearchForm';
 import MoviesCardList from './MoviesCardList/MoviesCardList';
-import MoviesMore from './MoviesMore/MoviesMore';
 import Preloader from './Preloader/Preloader/Preloader';
 
 function Movies({
@@ -14,10 +12,12 @@ function Movies({
   onOverlayClose,
   cards,
   moviesMore,
-  setIsLoading,
-  isLoading
+  //setIsLoading,
+  isLoading,
+  isMoviesSaved,
+  onMoviesSaved,
+  onMoviesDelete
 }) {
-  const moviesRoute = useRouteMatch({ path: '/movies', exact: false });
   const [movieSearch, setMovieSearch] = useState([]);
   const [input, setInput] = useState('');
   const [error, setError] = useState('Введите название фильма в поиск');
@@ -67,19 +67,16 @@ function Movies({
         errоr={setError}
         onSearch={handleSearchSubmit}
       />
-      { isLoading ?
-        <Preloader /> :
-        <>
+      { isLoading ? <Preloader /> :
           <MoviesCardList
             searchMovie={movieSearch}
             cards={cards}
-            moviesRoute={moviesRoute}
             isLoading={isLoading}
-          />
-          <MoviesMore
             moviesMore={moviesMore}
+            isMoviesSaved={isMoviesSaved}
+            onMoviesSaved={onMoviesSaved}
+            onMoviesDelete={onMoviesDelete}
           />
-        </>
       }
       <Footer />
     </main>

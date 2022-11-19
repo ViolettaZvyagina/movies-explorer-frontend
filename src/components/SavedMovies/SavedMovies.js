@@ -1,6 +1,5 @@
 import Header from '../Header/Header';
 import MoviesCardList from '../Movies/MoviesCardList/MoviesCardList';
-import MoviesMore from '../Movies/MoviesMore/MoviesMore';
 import SearchForm from '../Movies/SearchForm/SearchForm';
 import Footer from '../Footer/Footer';
 
@@ -10,7 +9,9 @@ function SavedMovies({
   onClose,
   onOverlayClose,
   movieCards,
-  cards
+  cards,
+  isMoviesSaved,
+  onMoviesDelete
 }) {
   return (
     <main className="content">
@@ -24,6 +25,8 @@ function SavedMovies({
       <MoviesCardList
         movieCards={movieCards}
         cards={cards}
+        isMoviesSaved={isMoviesSaved}
+        onMoviesDelete={onMoviesDelete}
       />
       <Footer />
     </main>

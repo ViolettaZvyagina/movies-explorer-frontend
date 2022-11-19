@@ -8,11 +8,12 @@ function Form({
   link,
   textLink,
   textButton,
-  name
+  name,
+  onSubmit
 }) {
   return (
     <section className={`form form_type_${name}`} name={`${name}`}>
-      <form className="form__container">
+      <form className="form__container" onSubmit={onSubmit}>
         <div className="form__inputs-container">
           <Link className="form__logo" to="/"></Link>
           <h2 className="form__title">{ title }</h2>
