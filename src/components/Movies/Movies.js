@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useLayoutEffect } from 'react';
 import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
 import SearchForm from './SearchForm/SearchForm';
@@ -11,48 +11,57 @@ function Movies({
   onClose,
   onOverlayClose,
   cards,
-  moviesMore,
-  //setIsLoading,
+  setMovies,
+  input,
+  movieSearch,
+  onSearch,
   isLoading,
   isMoviesSaved,
   onMoviesSaved,
-  onMoviesDelete
+  onMoviesDelete,
+  onCheckbox,
+  isChecked,
+  error,
 }) {
-  const [movieSearch, setMovieSearch] = useState([]);
-  const [input, setInput] = useState('');
-  const [error, setError] = useState('Введите название фильма в поиск');
+  const width = handleWindowSize();
+  const [moreMovies, setMoreMovies] = useState(0);
+
+  function handleWindowSize() {
+    const [size, setSize] = useState(0);
+
+    useLayoutEffect(() => {
+      function useSize() {
+        setSize(window.innerWidth);
+      }
+      window.addEventListener('resize', () =>{
+        setTimeout(useSize, 1500);
+      });
+      useSize();
+
+      return () => window.removeEventListener('resize', useSize);
+    }, []);
+    return size;
+  };
 
   useEffect(() => {
-    const movieSearch = localStorage.getItem('searchedMovies');
-    if (movieSearch) {
-      const parsedMovies = JSON.parse(movieSearch);
-      setMovieSearch(parsedMovies);
-    }
-
-    const inputSearch = localStorage.getItem('inputSearch');
-    if (inputSearch) {
-      setInput(inputSearch);
-    }
-  }, [])
-
-    function handleSearchSubmit(inputValue) {
-      //setIsLoading(true);
-      const movies = JSON.parse(localStorage.getItem('movies'));
-
-      /*try {*/
-      const foundMovies = movies.filter(data => {
-        return data.nameRU.toLowerCase().includes(inputValue.toLowerCase());
-      });
-
-      if (foundMovies.length) {
-        localStorage.setItem('searchedMovies', JSON.stringify(foundMovies));
-        setMovieSearch(foundMovies);
-        localStorage.setItem('inputSearch', inputValue);
+    function getMovies() {
+      if (width > 1200) {
+        setMovies(12);
+        setMoreMovies(3);
+      } else if (width <= 1200 && width > 760) {
+        setMovies(8);
+        setMoreMovies(2);
+      } else if (width <= 760) {
+        setMovies(5);
+        setMoreMovies(1);
       }
-      } /*finally {
-      setIsLoading(false);
     }
-    }*/
+    getMovies();
+  }, [width]);
+
+  function handleClickMoreCards() {
+    setMovies(cards + moreMovies);
+  };
 
   return (
     <main className="content">
@@ -64,15 +73,18 @@ function Movies({
       />
       <SearchForm
         input={input}
-        errоr={setError}
-        onSearch={handleSearchSubmit}
+        errоr={error}
+        onSearch={onSearch}
+        onCheckbox={onCheckbox}
+        isChecked={isChecked}
       />
       { isLoading ? <Preloader /> :
           <MoviesCardList
             searchMovie={movieSearch}
+            //isMovieShort={isMovieShort}
             cards={cards}
             isLoading={isLoading}
-            moviesMore={moviesMore}
+            moviesMore={handleClickMoreCards}
             isMoviesSaved={isMoviesSaved}
             onMoviesSaved={onMoviesSaved}
             onMoviesDelete={onMoviesDelete}

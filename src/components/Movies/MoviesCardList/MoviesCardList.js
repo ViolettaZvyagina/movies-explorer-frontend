@@ -6,6 +6,7 @@ import MoviesCard from '../MoviesCard/MoviesCard';
 function MoviesCardList({
   cards,
   searchMovie,
+  isMovieShort,
   moviesMore,
   isMoviesSaved,
   onMoviesSaved,

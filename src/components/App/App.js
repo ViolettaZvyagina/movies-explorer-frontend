@@ -1,5 +1,5 @@
 import { Switch, Route, useHistory} from 'react-router-dom';
-import { useState, useEffect, useLayoutEffect } from 'react';
+import { useState, useEffect } from 'react';
 import CurrentUserContext from '../../contexts/CurrentUserContext';
 // import ProtectedRoute from './ProtectedRoute/ProtectedRoute';
 import Main from '../Main/Main';
@@ -17,11 +17,13 @@ function App() {
   const [isNavigationPopupOpen, setIsNavigationPopupOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [movies, setMovies] = useState(0);
-  const [moreMovies, setMoreMovies] = useState(0);
   const [isMoviesSaved, setIsMoviesSaved] = useState([]);
   const [currentUser, setCurrentUser] = useState({});
   const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem('isloggedIn'));
-  const width = handleWindowSize();
+  const [movieSearch, setMovieSearch] = useState([]);
+  const [input, setInput] = useState('');
+  const [isChecked, setIsChecked] = useState(false);
+  const [error, setError] = useState('Введите название фильма в поиск');
   const history = useHistory();
 
   function handleNavigationPopupClick() {
@@ -95,7 +97,6 @@ function App() {
       Promise.all([mainApi.getUserInfo(), mainApi.getSavedMovies()])
         .then(([user, movieInfo]) => {
           setCurrentUser(user);
-          console.log(movieInfo)
           setIsMoviesSaved(movieInfo);
         })
         .catch((error) => {
@@ -104,17 +105,12 @@ function App() {
     }
   }, [isLoggedIn]);
 
-  useEffect(() => {
-    if (isLoggedIn) {
-      history.push('/movies');
-    }
-  }, [isLoggedIn, history])
-
   function handleLogin({email, password}) {
     mainApi.authorize({email, password})
       .then((data) => {
         setIsLoggedIn(() => {
-          localStorage.setItem('isloggedIn', true)
+          localStorage.setItem('isloggedIn', true);
+          history.push('/movies');
           return true;
         });
       })
@@ -128,43 +124,6 @@ function App() {
       .catch((error) => {
         console.log(`Ошибка: ${error}`);
       })
-  };
-
-  function handleWindowSize() {
-    const [size, setSize] = useState(0);
-
-    useLayoutEffect(() => {
-      function useSize() {
-        setSize(window.innerWidth);
-      }
-      window.addEventListener('resize', () =>{
-        setTimeout(useSize, 1500);
-      });
-      useSize();
-
-      return () => window.removeEventListener('resize', useSize);
-    }, []);
-    return size;
-  };
-
-  useEffect(() => {
-    function getMovies() {
-      if (width > 1200) {
-        setMovies(12);
-        setMoreMovies(3);
-      } else if (width <= 1200 && width > 760) {
-        setMovies(8);
-        setMoreMovies(2);
-      } else if (width <= 760) {
-        setMovies(5);
-        setMoreMovies(1);
-      }
-    }
-    getMovies();
-  }, [width]);
-
-  function handleClickMoreCards() {
-    setMovies(movies + moreMovies);
   };
 
   function handleGetSavedMovies() {
@@ -201,6 +160,113 @@ function App() {
       })
   };
 
+  useEffect(() => {
+    const movieSearch = localStorage.getItem('searchedMovies');
+    if (movieSearch) {
+      const parsedMovies = JSON.parse(movieSearch);
+      setMovieSearch(parsedMovies);
+    }
+
+    const inputSearch = localStorage.getItem('inputSearch');
+    if (inputSearch) {
+      setInput(inputSearch);
+    }
+
+    const checkbox = localStorage.getItem('checkbox');
+    if (checkbox === 'true') {
+      setIsChecked(true);
+    }
+  }, []);
+
+    /*function handleSearchSubmit(inputValue, isChecked) {
+
+      const movies = JSON.parse(localStorage.getItem('movies'));
+
+      const foundMovies = movies.filter(data => {
+        return data.nameRU.toLowerCase().includes(inputValue.toLowerCase());
+      });
+      if (foundMovies.length) {
+        localStorage.setItem('searchedMovies', JSON.stringify(foundMovies));
+        setMovieSearch(foundMovies);
+        localStorage.setItem('inputSearch', inputValue);
+      }
+
+      };*/
+
+      function handleSearchSubmit(inputValue, isChecked) {
+
+        const movies = JSON.parse(localStorage.getItem('movies'));
+
+        const foundMovies = movies.filter(data => {
+          return data.nameRU.toLowerCase().includes(inputValue.toLowerCase());
+        });
+        if (foundMovies.length) {
+          localStorage.setItem('searchedMovies', JSON.stringify(foundMovies));
+          setMovieSearch(foundMovies);
+          localStorage.setItem('inputSearch', inputValue);
+          console.log(foundMovies)
+        }
+        /*if (isChecked) {
+          const shortMoviesCards = foundMovies.filter((data) => data.duration <= 40);
+          setMovieSearch(shortMoviesCards);
+        } */
+      }
+
+    function handleCheck(e) {
+      const isChecked = e.target.checked;
+      if (!isChecked) {
+        setIsChecked(false);
+        localStorage.removeItem('checkbox', isChecked);
+      } else {
+        setIsChecked(true);
+        localStorage.setItem('checkbox', isChecked);
+      }
+      console.log(isChecked)
+    }
+
+
+  /*function handleShortMovies(isChecked) {
+    if (isChecked && movieSearch[0]) {
+      const shortMoviesCards = movieSearch.filter((data) => data.duration <= 40);
+      setMovieSearch(shortMoviesCards);
+
+    } if (!isChecked && movieSearch[0]) {
+      const movieSearch = JSON.parse(localStorage.getItem('searchedMovies'));
+      setMovieSearch(movieSearch);
+    } if (!movieSearch[0]) {
+      setError('Ничего не найдено');
+      console.log('Ничего не найдено')
+    }
+  }; */
+
+  function handleShortMovies(isChecked) {
+    if (isChecked && movieSearch[0]) {
+      const shortMoviesCards = movieSearch.filter((data) => data.duration <= 40);
+      setMovieSearch(shortMoviesCards);
+
+    } if (!isChecked && movieSearch[0]) {
+      const movieSearch = JSON.parse(localStorage.getItem('searchedMovies'));
+      setMovieSearch(movieSearch);
+    } else {
+      setError('Ничего не найдено');
+      console.log('Ничего не найдено')
+    }
+  };
+
+  useEffect(() => {
+    handleShortMovies(isChecked)
+  }, [isChecked]);
+
+  function handleShortMoviesSaved(isChecked) {
+    if (isChecked) {
+      const shortMoviesCards = isMoviesSaved.filter((data) => data.duration <= 40);
+      setMovies(shortMoviesCards);
+    } else {
+      const movies = JSON.parse(localStorage.getItem('searchedMovies'));
+      setMovies(movies);
+    }
+  };
+
   return (
     <CurrentUserContext.Provider value={currentUser}>
         <div className="page">
@@ -215,12 +281,17 @@ function App() {
                 onOverlayClose={closePopupOnOverlay}
                 isOpen={isNavigationPopupOpen}
                 cards={movies}
-                moviesMore={handleClickMoreCards}
-                setIsLoading={setIsLoading}
+                setMovies={setMovies}
                 isLoading={isLoading}
+                input={input}
+                movieSearch={movieSearch}
+                onSearch={handleSearchSubmit}
                 isMoviesSaved={isMoviesSaved}
                 onMoviesSaved={handleSavedMovies}
                 onMoviesDelete={handleDeleteMovies}
+                onCheckbox={handleCheck}
+                isChecked={isChecked}
+                error={setError}
                />
             </Route>
             <Route path="/saved-movies">
@@ -233,6 +304,9 @@ function App() {
                 isMoviesSaved={isMoviesSaved}
                 onMoviesSaved={handleSavedMovies}
                 onMoviesDelete={handleDeleteMovies}
+                //onCheckbox={handleCheck}
+                //isChecked={isChecked}
+               // isMovieShort={isMovieShort}
               />
             </Route>
             <Route path='/profile'>

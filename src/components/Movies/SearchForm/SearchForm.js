@@ -3,7 +3,13 @@ import './SearchForm.css';
 import FilterCheckbox from '../FilterCheckbox/FilterCheckbox';
 import useFormWithValidation from '../../../hooks/UseFormWithValidation';
 
-function SearchForm({onSearch, input, errоr}) {
+function SearchForm({
+  onSearch,
+  input,
+  errоr,
+  onCheckbox,
+  isChecked,
+}) {
   const {
     isValid,
     inputValues,
@@ -38,7 +44,10 @@ function SearchForm({onSearch, input, errоr}) {
          />
         <button className="search-form__button" type="submit" onClick={handleSubmit}></button>
       </form>
-      <FilterCheckbox/>
+      <FilterCheckbox
+        onCheckbox={onCheckbox}
+        isChecked={isChecked}
+      />
     </section>
   );
 }
