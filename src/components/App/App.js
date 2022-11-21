@@ -193,7 +193,7 @@ function App() {
 
       };*/
 
-      function handleSearchSubmit(inputValue, isChecked) {
+      /*function handleSearchSubmit(inputValue, isChecked) {
 
         const movies = JSON.parse(localStorage.getItem('movies'));
 
@@ -209,8 +209,59 @@ function App() {
         /*if (isChecked) {
           const shortMoviesCards = foundMovies.filter((data) => data.duration <= 40);
           setMovieSearch(shortMoviesCards);
-        } */
-      }
+        }
+      } */
+
+      function handleSearchSubmit(inputValue, isChecked) {
+
+        const movies = JSON.parse(localStorage.getItem('movies'));
+        if (isChecked) {
+          const foundMovies = movies.filter(data => (data.duration <= 40) && (data.nameRU.toLowerCase().includes(inputValue.toLowerCase())))
+        if (foundMovies.length) {
+          localStorage.setItem('searchedMovies', JSON.stringify(foundMovies));
+          setMovieSearch(foundMovies);
+          localStorage.setItem('inputSearch', inputValue);
+          console.log(foundMovies)
+        }
+        } if (!isChecked) {
+          const foundMovies = movies.filter(data => {
+            return data.nameRU.toLowerCase().includes(inputValue.toLowerCase());
+          });
+          if (foundMovies.length) {
+            localStorage.setItem('searchedMovies', JSON.stringify(foundMovies));
+            setMovieSearch(foundMovies);
+            localStorage.setItem('inputSearch', inputValue);
+            console.log(foundMovies)
+        }
+    }
+  }
+
+  /*function handleSearchSubmit(inputValue, isChecked) {
+
+    const movies = JSON.parse(localStorage.getItem('movies'));
+    if (!isChecked) {
+      const foundMovies = movies.filter(data => (data.duration <= 40) && (data.nameRU.toLowerCase().includes(inputValue.toLowerCase())))
+    if (foundMovies.length) {
+      localStorage.setItem('searchedMovies', JSON.stringify(foundMovies));
+      setMovieSearch(foundMovies);
+      localStorage.setItem('inputSearch', inputValue);
+      console.log(foundMovies)
+    } else {
+      const foundMovies = movies.filter(data => {
+        return data.nameRU.toLowerCase().includes(inputValue.toLowerCase());
+      });
+      if (foundMovies.length) {
+        localStorage.setItem('searchedMovies', JSON.stringify(foundMovies));
+        setMovieSearch(foundMovies);
+        localStorage.setItem('inputSearch', inputValue);
+        console.log(foundMovies)
+    }
+  }
+}
+} */
+
+
+
 
     function handleCheck(e) {
       const isChecked = e.target.checked;
@@ -240,16 +291,16 @@ function App() {
   }; */
 
   function handleShortMovies(isChecked) {
-    if (isChecked && movieSearch[0]) {
+    if (isChecked && movieSearch.length) {
       const shortMoviesCards = movieSearch.filter((data) => data.duration <= 40);
       setMovieSearch(shortMoviesCards);
 
-    } if (!isChecked && movieSearch[0]) {
+    } if (!isChecked && movieSearch.length) {
       const movieSearch = JSON.parse(localStorage.getItem('searchedMovies'));
       setMovieSearch(movieSearch);
-    } else {
-      setError('Ничего не найдено');
-      console.log('Ничего не найдено')
+
+    } if (!movieSearch.length) {
+      setError();
     }
   };
 
