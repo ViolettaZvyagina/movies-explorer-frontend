@@ -13,7 +13,8 @@ function Header({
   isNavigationPopupOpen,
   isOpen,
   onClose,
-  onOverlayClose
+  onOverlayClose,
+  isLogged
 }) {
   const isMain = useRouteMatch({ path: '/', exact: true });
 
@@ -22,24 +23,25 @@ function Header({
       <div className="header__content">
       <Link className="header__logo" to="/"></Link>
       <Switch>
+      { !isLogged ?
         <Route exact path="/">
           <div className="header__info">
             <Link className="header__registration" to="/signup">Регистрация</Link>
             <Link className="header__login" to="/signin">Войти</Link>
-            <NavigationPopup />
           </div>
-        </Route>
-        <Route path={['/movies', '/saved-movies', '/profile']}>
+        </Route> :
+        <>
           <Navigation />
           <BurgerMenu
             isNavigationPopupOpen={isNavigationPopupOpen}
+            isMain={isMain}
           />
           <NavigationPopup
             isOpen={isOpen}
             onClose={onClose}
             onOverlayClose={onOverlayClose}
           />
-        </Route>
+        </> }
       </Switch>
       </div>
     </header>

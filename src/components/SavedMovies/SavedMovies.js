@@ -14,7 +14,10 @@ function SavedMovies({
   onMoviesDelete,
   onCheckbox,
   isChecked,
-  isMovieShort,
+  isLogged,
+  onSearch,
+  input,
+  errоr,
 }) {
   return (
     <main className="content">
@@ -23,17 +26,20 @@ function SavedMovies({
         isOpen={isOpen}
         onClose={onClose}
         onOverlayClose={onOverlayClose}
+        isLogged={isLogged}
       />
       <SearchForm
         onCheckbox={onCheckbox}
         isChecked={isChecked}
+        input={input}
+        //errоr={error}
+        onSearch={onSearch}
       />
       <MoviesCardList
         movieCards={movieCards}
         cards={cards}
         isMoviesSaved={isMoviesSaved}
         onMoviesDelete={onMoviesDelete}
-        //isMovieShort={isMovieShort}
       />
       <Footer />
     </main>

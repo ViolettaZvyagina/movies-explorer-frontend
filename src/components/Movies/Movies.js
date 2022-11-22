@@ -22,6 +22,7 @@ function Movies({
   onCheckbox,
   isChecked,
   error,
+  isLogged
 }) {
   const width = handleWindowSize();
   const [moreMovies, setMoreMovies] = useState(0);
@@ -70,6 +71,7 @@ function Movies({
         isOpen={isOpen}
         onClose={onClose}
         onOverlayClose={onOverlayClose}
+        isLogged={isLogged}
       />
       <SearchForm
         input={input}
@@ -81,7 +83,6 @@ function Movies({
       { isLoading ? <Preloader /> :
           <MoviesCardList
             searchMovie={movieSearch}
-            //isMovieShort={isMovieShort}
             cards={cards}
             isLoading={isLoading}
             moviesMore={handleClickMoreCards}

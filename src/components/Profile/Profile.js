@@ -2,10 +2,12 @@ import { Link } from 'react-router-dom';
 import Header from '../Header/Header';
 import './Profile.css';
 
-function Profile() {
+function Profile({onLogOut, isLogged}) {
   return (
     <section className="profile">
-      <Header />
+      <Header
+        isLogged={isLogged}
+       />
       <main className="profile__content">
         <h2 className="profile__title">Привет, Виолетта!</h2>
 
@@ -41,7 +43,7 @@ function Profile() {
           <button className="profile__button_edit">Редактировать</button>
         </form>
 
-        <Link className="profile__button_signout" to="/">Выйти из аккаунта</Link>
+        <Link className="profile__button_signout" to="/" onClick={onLogOut}>Выйти из аккаунта</Link>
       </main>
     </section>
   );

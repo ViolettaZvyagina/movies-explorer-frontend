@@ -2,6 +2,9 @@
   display: none;
 }
 
+.burger-menu_color_pink {
+  display: none;
+}
 
 @media screen and (max-width: 1200px) {
   .burger-menu {
@@ -16,6 +19,18 @@
     background-color: #FFFF;
   }
 
+  .burger-menu_color_pink {
+    width: 44px;
+    height: 44px;
+    background-size: cover;
+    display: flex;
+    margin: auto 0;
+    background-image: url("../../../images/MenuBurger/menu-burger.svg");
+    padding: 0;
+    border: 0;
+    background-color: #F3C1F8;
+  }
+
   .burger-menu:hover {
     opacity: 0.6;
     cursor: pointer;
@@ -24,6 +39,13 @@
 
 @media screen and (max-width: 760px) {
   .burger-menu {
+    width: 35px;
+    height: 43px;
+    background-size: 100%;
+    margin: 20px 3px 0 0;
+  }
+
+  .burger-menu_color_pink {
     width: 35px;
     height: 43px;
     background-size: 100%;

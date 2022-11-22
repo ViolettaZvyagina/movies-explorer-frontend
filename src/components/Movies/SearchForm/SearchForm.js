@@ -24,7 +24,7 @@ function SearchForm({
   function handleSubmit(e) {
     e.preventDefault();
     if (isValid) {
-      onSearch(inputValues.search /*isChecked*/);
+      onSearch(inputValues.search, isChecked);
     } else {
       errоr('Введите ключевое слово')
     }
