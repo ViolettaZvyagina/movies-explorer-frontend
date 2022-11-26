@@ -3,7 +3,7 @@ import './Register.css';
 import { namePattern } from '../../utils/Сontans';
 import useFormWithValidation from '../../hooks/UseFormWithValidation';
 
-function Register({onRegister, isDisabled}) {
+function Register({onRegister}) {
 
   const {
     isValid,
@@ -17,6 +17,7 @@ function Register({onRegister, isDisabled}) {
     e.preventDefault();
     onRegister({...inputValues})
     resetInputErrors();
+
   };
 
   return (
@@ -41,7 +42,6 @@ function Register({onRegister, isDisabled}) {
         pattern={namePattern}
         value={inputValues.name || ''}
         onChange={handleChange}
-        disabled={isDisabled}
         id="name-input"
         className="register__input register__input_type_name"
         placeholder="Имя"
@@ -57,7 +57,6 @@ function Register({onRegister, isDisabled}) {
         name="email"
         value={inputValues.email || ''}
         onChange={handleChange}
-        disabled={isDisabled}
         id="email-input"
         className="register__input register__input_type_email"
         placeholder="Email"
@@ -73,7 +72,6 @@ function Register({onRegister, isDisabled}) {
         name="password"
         value={inputValues.password || ''}
         onChange={handleChange}
-        disabled={isDisabled}
         id="password-input"
         className="register__input register__input_type_password"
         placeholder="Пароль"

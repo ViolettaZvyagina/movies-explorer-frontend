@@ -269,7 +269,6 @@ function App() {
               { isLoggedIn
               ? <Redirect to="/profile" />
               : <Register
-                  isDisabled={isDisabled}
                   onRegister={handleRegister}
                 /> }
             </Route>
