@@ -18,6 +18,7 @@
 .form__inputs-container {
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
 .form__button-container {
@@ -46,6 +47,22 @@
 }
 
 .form__submit-button {
+  margin: 0 0 16px;
+  height: 45px;
+  background-color: #fff;
+  border: #aaa0a0 1px solid;
+  color: #aaa0a0;
+  font-family: 'Inter', 'Arial', sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 1.2;
+  text-align: center;
+  border-radius: 3px;
+  padding: 0;
+}
+
+.form__submit-button-active {
   margin: 0 0 16px;
   height: 45px;
   background-color: #000;
@@ -86,7 +103,7 @@
   text-decoration: none;
 }
 
-.form__logo:hover, .form__submit-button:hover, .form__link:hover {
+.form__logo:hover, .form__submit-button-active:hover, .form__link:hover {
   opacity: 0.6;
   cursor: pointer;
 }
@@ -124,6 +141,9 @@
     margin: 50px auto 80px;
   }
   .form__submit-button {
+    font-size: 12px;
+  }
+  .form__submit-button-active {
     font-size: 12px;
   }
   .form__text {

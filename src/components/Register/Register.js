@@ -1,27 +1,23 @@
-import { useState } from 'react';
 import Form from '../Form/Form';
 import './Register.css';
+import { namePattern } from '../../utils/Сontans';
+import useFormWithValidation from '../../hooks/UseFormWithValidation';
 
-function Register({onRegister}) {
+function Register({onRegister, isDisabled}) {
 
-  const [registerData, setRegisterData] = useState({
-    name: '',
-    email: '',
-    password: '',
-  });
+  const {
+    isValid,
+    inputValues,
+    inputErrors,
+    handleChange,
+    resetInputErrors
+  } = useFormWithValidation({});
 
   function handleSubmit(e) {
     e.preventDefault();
-    onRegister(registerData);
+    onRegister({...inputValues})
+    resetInputErrors();
   };
-
-  function handleChange(e) {
-    const {name, value} = e.target;
-    setRegisterData({
-      ...registerData,
-      [name]: value,
-    })
-  }
 
   return (
     <Form
@@ -32,6 +28,7 @@ function Register({onRegister}) {
       textButton='Зарегистрироваться'
       name='register'
       onSubmit={handleSubmit}
+      isValid={isValid}
     >
 
       <label className="register__label" htmlFor="name-input">Имя</label>
@@ -41,12 +38,15 @@ function Register({onRegister}) {
         maxLength="30"
         type="name"
         name="name"
-        value={registerData.name}
+        pattern={namePattern}
+        value={inputValues.name || ''}
         onChange={handleChange}
+        disabled={isDisabled}
         id="name-input"
         className="register__input register__input_type_name"
         placeholder="Имя"
       />
+      <span className="register__input-error register__input-error_place_first" id="input-name-error">{!isValid && inputErrors.name}</span>
 
       <label className="register__label" htmlFor="email-input">Email</label>
       <input
@@ -55,12 +55,14 @@ function Register({onRegister}) {
         maxLength="30"
         type="email"
         name="email"
-        value={registerData.email}
+        value={inputValues.email || ''}
         onChange={handleChange}
+        disabled={isDisabled}
         id="email-input"
         className="register__input register__input_type_email"
         placeholder="Email"
       />
+      <span className="register__input-error register__input-error_place_second" id="input-name-error">{!isValid && inputErrors.email}</span>
 
       <label className="register__label" htmlFor="password-input">Пароль</label>
       <input
@@ -69,12 +71,14 @@ function Register({onRegister}) {
         maxLength="30"
         type="password"
         name="password"
-        value={registerData.password}
+        value={inputValues.password || ''}
         onChange={handleChange}
+        disabled={isDisabled}
         id="password-input"
         className="register__input register__input_type_password"
         placeholder="Пароль"
       />
+      <span className="register__input-error register__input-error_place_third" id="input-name-error">{!isValid && inputErrors.password}</span>
     </Form>
   );
 }

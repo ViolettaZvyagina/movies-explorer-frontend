@@ -6,7 +6,7 @@ function MoviesCard({
   savedMoviesRoute,
   onMoviesSaved,
   isMoviesSaved,
-  onMoviesDelete
+  onMoviesDelete,
 }) {
 
   const isSaved = isMoviesSaved.some((cards) => cards.movieId === movie.id);

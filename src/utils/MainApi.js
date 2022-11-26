@@ -97,12 +97,15 @@ class MainApi {
     .then(this._handleResponse);
   }
 
-  updateProfile = ({name, email}) => {
+  updateProfile = (name, email) => {
       return fetch(`${this._url}/users/me`, {
         method: 'PATCH',
         headers: this._headers,
         credentials: "include",
-        body: JSON.stringify ({name, email})
+        body: JSON.stringify ({
+          name: name,
+          email: email,
+        })
       })
       .then(this._handleResponse);
     }
@@ -118,7 +121,7 @@ class MainApi {
 };
 
 const mainApi = new MainApi({
-  url:'http://localhost:4000',
+  url:'https://api.zvyagina.diplom.nomoredomains.icu',
   headers: {
     'Content-Type': 'application/json'
   }

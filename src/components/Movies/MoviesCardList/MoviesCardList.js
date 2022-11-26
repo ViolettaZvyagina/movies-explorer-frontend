@@ -1,16 +1,14 @@
 import { useRouteMatch } from 'react-router-dom';
 import './MoviesCardList.css';
 import MoviesCard from '../MoviesCard/MoviesCard';
-// import movies from '../../../utils/Movies';
 
 function MoviesCardList({
   cards,
   searchMovie,
-  isMovieShort,
   moviesMore,
   isMoviesSaved,
   onMoviesSaved,
-  onMoviesDelete
+  onMoviesDelete,
 }) {
   const moviesRoute = useRouteMatch({ path: '/movies', exact: false });
   const savedMoviesRoute = useRouteMatch({ path: '/saved-movies', exact: false });

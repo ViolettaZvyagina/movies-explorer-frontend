@@ -1,4 +1,4 @@
-import { Switch, Route, useHistory, Redirect} from 'react-router-dom';
+import { Switch, Route, useHistory, Redirect } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import CurrentUserContext from '../../contexts/CurrentUserContext';
 import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
@@ -12,6 +12,7 @@ import Register from '../Register/Register';
 import Login from '../Login/Login';
 import moviesApi from '../../utils/MoviesApi';
 import mainApi from '../../utils/MainApi';
+import InfoTooltip from '../InfoTooltip/InfoTooltip';
 
 function App() {
   const [isNavigationPopupOpen, setIsNavigationPopupOpen] = useState(false);
@@ -21,17 +22,23 @@ function App() {
   const [currentUser, setCurrentUser] = useState({});
   const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem('isloggedIn'));
   const [movieSearch, setMovieSearch] = useState([]);
-  const [input, setInput] = useState('');
-  const [isChecked, setIsChecked] = useState(false);
-  const [error, setError] = useState('Введите название фильма в поиск');
+  const [isDisabled, setIsDisabled] = useState(false);
+  const [isInfoTooltipOpen, setIsInfoTooltipOpen] = useState(false);
+  const [infoTooltipStatus, setInfoTooltipStatus] = useState('');
+  const [infoTooltipImage, setInfoTooltipImage] = useState({});
   const history = useHistory();
 
   function handleNavigationPopupClick() {
     setIsNavigationPopupOpen(true);
   };
 
+  function handleInfoTooltipOpen() {
+    setIsInfoTooltipOpen(true);
+  }
+
   function closePopup() {
     setIsNavigationPopupOpen(false);
+    setIsInfoTooltipOpen(false)
   };
 
   function closePopupOnOverlay(evt) {
@@ -73,22 +80,20 @@ function App() {
     mainApi.register({name, email, password})
     .then((data) => {
       if(data) {
-        /*setInfoTooltipStatus({
-          imageType: 'imageSuccess',
-          textType: 'textSuccess'});
-        handleInfoTooltipOpen();*/
+        setInfoTooltipImage({
+          imageType: 'imageSuccess'});
+        setInfoTooltipStatus('Пользователь успешно зарегистрирован');
+        handleInfoTooltipOpen();
         history.push('/signin');
       }
     })
-    /*.catch((error) => {
-      setInfoTooltipStatus({
-        imageType: 'imageError',
-        textType: 'textError'});
-      handleInfoTooltipOpen();
-      console.log(`Ошибка: ${error}`);
-    })*/
     .catch((error) => {
       console.log(`Ошибка: ${error}`);
+      setIsDisabled(true);
+      setInfoTooltipImage({
+        imageType: 'imageError'});
+      setInfoTooltipStatus('Ошибка регистрации. Введены некорректные данные');
+      handleInfoTooltipOpen();
     })
   };
 
@@ -98,6 +103,7 @@ function App() {
         .then(([user, movieInfo]) => {
           setCurrentUser(user);
           setIsMoviesSaved(movieInfo);
+          localStorage.setItem('movieSaved', JSON.stringify(movieInfo));
         })
         .catch((error) => {
           console.log(`Ошибка: ${error}`);
@@ -114,15 +120,14 @@ function App() {
           return true;
         });
       })
-      /*.catch((error) => {
-        setInfoTooltipStatus({
-          imageType: 'imageError',
-          textType: 'textError'});
+      .catch((err) => {
+        console.log(`Ошибка: ${err}`);
+        setIsDisabled(true);
+        setInfoTooltipImage({
+          imageType: 'imageError'});
+        setInfoTooltipStatus('Ошибка входа. Введены некорректные данные');
         handleInfoTooltipOpen();
-        console.log(`Ошибка: ${error}`);
-      })*/
-      .catch((error) => {
-        console.log(`Ошибка: ${error}`);
+        console.log(`Ошибка: ${err}`);
       })
   };
 
@@ -133,21 +138,49 @@ function App() {
       history.push('/');
       localStorage.removeItem('isloggedIn');
       localStorage.removeItem('searchedMovies');
+      localStorage.removeItem('movieSaved');
       localStorage.removeItem('inputSearch');
       localStorage.removeItem('checkbox');
       setMovieSearch([]);
-      setInput('');
-      setIsChecked(false);
     })
     .catch((err) => {
-      setError(err);
+      setInfoTooltipImage({
+        imageType: 'imageError'});
+      setInfoTooltipStatus('Произошла ошибка. Попробуйте снова');
+      handleInfoTooltipOpen();
+      console.log(`Ошибка: ${err}`);
     })
-  }
+  };
+
+    function handleUpdateProfile(user) {
+      mainApi.updateProfile(user.name, user.email)
+      .then((userData) => {
+        setCurrentUser(value => {
+          return {
+            ...value,
+            name: userData.name,
+            email: userData.email,
+          }
+        })
+        setInfoTooltipImage({
+          imageType: 'imageSuccess'});
+        setInfoTooltipStatus('Данные успешно обновлены');
+        handleInfoTooltipOpen();
+      })
+      .catch((error) => {
+        console.log(`Ошибка: ${error}`);
+        setInfoTooltipImage({
+          imageType: 'imageError'});
+        setInfoTooltipStatus('Ошибка обновления профиля. Введите корректные данные');
+        handleInfoTooltipOpen();
+      })
+    }
 
   function handleGetSavedMovies() {
     mainApi.getSavedMovies()
     .then((searchedMovies) => {
       setIsMoviesSaved(searchedMovies);
+      localStorage.setItem('movieSaved', JSON.stringify(searchedMovies))
     })
     .catch((error) => {
       console.log(`Ошибка: ${error}`);
@@ -178,190 +211,6 @@ function App() {
       })
   };
 
-  useEffect(() => {
-    const movieSearch = localStorage.getItem('searchedMovies');
-    if (movieSearch) {
-      const parsedMovies = JSON.parse(movieSearch);
-      setMovieSearch(parsedMovies);
-    }
-
-    const inputSearch = localStorage.getItem('inputSearch');
-    if (inputSearch) {
-      setInput(inputSearch);
-    }
-
-    const checkbox = localStorage.getItem('checkbox');
-    if (checkbox === 'true') {
-      setIsChecked(true);
-    }
-  }, []);
-
-    /*function handleSearchSubmit(inputValue, isChecked) {
-      const movies = JSON.parse(localStorage.getItem('movies'));
-      const foundMovies = movies.filter(data => {
-        return data.nameRU.toLowerCase().includes(inputValue.toLowerCase());
-      });
-      if (foundMovies.length) {
-        localStorage.setItem('searchedMovies', JSON.stringify(foundMovies));
-        setMovieSearch(foundMovies);
-        localStorage.setItem('inputSearch', inputValue);
-      }
-      };*/
-
-      /*function handleSearchSubmit(inputValue, isChecked) {
-        const movies = JSON.parse(localStorage.getItem('movies'));
-        const foundMovies = movies.filter(data => {
-          return data.nameRU.toLowerCase().includes(inputValue.toLowerCase());
-        });
-        if (foundMovies.length) {
-          localStorage.setItem('searchedMovies', JSON.stringify(foundMovies));
-          setMovieSearch(foundMovies);
-          localStorage.setItem('inputSearch', inputValue);
-          console.log(foundMovies)
-        }
-        /*if (isChecked) {
-          const shortMoviesCards = foundMovies.filter((data) => data.duration <= 40);
-          setMovieSearch(shortMoviesCards);
-        }
-      } */
-
-      function handleSearchSubmit(inputValue, isChecked) {
-
-        const movies = JSON.parse(localStorage.getItem('movies'));
-
-        try {
-          const foundMovies = movies.filter(data => {
-            return data.nameRU.toLowerCase().includes(inputValue.toLowerCase());
-          });
-
-          localStorage.setItem('searchedMovies', JSON.stringify(foundMovies));
-          setMovieSearch(foundMovies);
-          localStorage.setItem('inputSearch', inputValue);
-          setInput(inputValue);
-
-          if (isChecked) {
-            const shortMovies = foundMovies.filter((data) => data.duration <= 40);
-            setMovieSearch(shortMovies);
-            localStorage.setItem('searchedMovies', JSON.stringify(foundMovies));
-            localStorage.setItem('inputSearch', inputValue);
-          }
-        } catch (err) {
-          console.log(err);
-          setError('Во время запроса произошла ошибка. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз');
-      }
-    }
-
-    function handleSavedSearchSubmit(inputValue, isChecked) {
-
-      try {
-        const isMoviesSaved = isMoviesSaved.filter(data => {
-          return data.nameRU.toLowerCase().includes(inputValue.toLowerCase());
-        });
-
-        localStorage.setItem('isMoviesSaved', JSON.stringify(isMoviesSaved));
-        setMovieSearch(foundMovies);
-        localStorage.setItem('inputSearch', inputValue);
-        setInput(inputValue);
-
-        if (isChecked) {
-          const shortMovies = foundMovies.filter((data) => data.duration <= 40);
-          setMovieSearch(shortMovies);
-          localStorage.setItem('searchedMovies', JSON.stringify(foundMovies));
-          localStorage.setItem('inputSearch', inputValue);
-        }
-      } catch (err) {
-        console.log(err);
-        setError('Во время запроса произошла ошибка. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз');
-    }
-  }
-
-  /*function handleSearchSubmit(inputValue, isChecked) {
-    const movies = JSON.parse(localStorage.getItem('movies'));
-    if (!isChecked) {
-      const foundMovies = movies.filter(data => (data.duration <= 40) && (data.nameRU.toLowerCase().includes(inputValue.toLowerCase())))
-    if (foundMovies.length) {
-      localStorage.setItem('searchedMovies', JSON.stringify(foundMovies));
-      setMovieSearch(foundMovies);
-      localStorage.setItem('inputSearch', inputValue);
-      console.log(foundMovies)
-    } else {
-      const foundMovies = movies.filter(data => {
-        return data.nameRU.toLowerCase().includes(inputValue.toLowerCase());
-      });
-      if (foundMovies.length) {
-        localStorage.setItem('searchedMovies', JSON.stringify(foundMovies));
-        setMovieSearch(foundMovies);
-        localStorage.setItem('inputSearch', inputValue);
-        console.log(foundMovies)
-    }
-  }
-}
-} */
-
-    function handleCheck(e) {
-      const isChecked = e.target.checked;
-      if (!isChecked) {
-        setIsChecked(false);
-        localStorage.removeItem('checkbox', isChecked);
-      } else {
-        setIsChecked(true);
-        localStorage.setItem('checkbox', isChecked);
-      }
-    }
-
-
-  /*function handleShortMovies(isChecked) {
-    if (isChecked && movieSearch[0]) {
-      const shortMoviesCards = movieSearch.filter((data) => data.duration <= 40);
-      setMovieSearch(shortMoviesCards);
-    } if (!isChecked && movieSearch[0]) {
-      const movieSearch = JSON.parse(localStorage.getItem('searchedMovies'));
-      setMovieSearch(movieSearch);
-    } if (!movieSearch[0]) {
-      setError('Ничего не найдено');
-      console.log('Ничего не найдено')
-    }
-  }; */
-
-  function handleShortMovies(isChecked) {
-    if (isChecked) {
-      const shortMoviesCards = movieSearch.filter((data) => data.duration <= 40);
-      setMovieSearch(shortMoviesCards);
-
-    } if (!isChecked) {
-      const movieSearch = JSON.parse(localStorage.getItem('searchedMovies'));
-      setMovieSearch(movieSearch);
-    } if (!movieSearch.length) {
-      setMovieSearch([]);
-    }
-  };
-
-  useEffect(() => {
-    handleShortMovies(isChecked)
-  }, [isChecked]);
-
-  function handleShortMoviesSaved(isChecked) {
-    if (isChecked) {
-      const shortSavedMoviesCards = movieSearch.filter((data) => data.duration <= 40);
-      setMovieSearch(shortSavedMoviesCards);
-
-    } if (!isChecked) {
-      const movieSearch = JSON.parse(localStorage.getItem('searchedMovies'));
-      setMovieSearch(movieSearch);
-    } if (!movieSearch.length) {
-      setMovieSearch([]);
-    }
-  }
-
-  /*function handleShortMoviesSaved(isChecked) {
-    if (isChecked) {
-      const shortMoviesCards = isMoviesSaved.filter((data) => data.duration <= 40);
-      setMovies(shortMoviesCards);
-    } else {
-      const movies = JSON.parse(localStorage.getItem('searchedMovies'));
-      setMovies(movies);
-    }
-  };*/
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
@@ -386,16 +235,12 @@ function App() {
                 isOpen={isNavigationPopupOpen}
                 cards={movies}
                 setMovies={setMovies}
+                setMovieSearch={setMovieSearch}
                 isLoading={isLoading}
-                input={input}
                 movieSearch={movieSearch}
-                onSearch={handleSearchSubmit}
                 isMoviesSaved={isMoviesSaved}
                 onMoviesSaved={handleSavedMovies}
                 onMoviesDelete={handleDeleteMovies}
-                onCheckbox={handleCheck}
-                isChecked={isChecked}
-                error={setError}
                />
             <ProtectedRoute
                 component={SavedMovies}
@@ -405,23 +250,26 @@ function App() {
                 onClose={closePopup}
                 onOverlayClose={closePopupOnOverlay}
                 isOpen={isNavigationPopupOpen}
+                isLoading={isLoading}
                 cards={movies}
                 isMoviesSaved={isMoviesSaved}
                 onMoviesSaved={handleSavedMovies}
                 onMoviesDelete={handleDeleteMovies}
-                //onCheckbox={handleCheck}
-                //isChecked={isChecked}
+                setIsMoviesSaved={setIsMoviesSaved}
               />
             <ProtectedRoute
                 component={Profile}
                 path='/profile'
                 isLogged={isLoggedIn}
                 onLogOut={handleLogout}
+                onUpdateProfile={handleUpdateProfile}
+                currentUser={currentUser}
               />
             <Route path='/signup'>
               { isLoggedIn
               ? <Redirect to="/profile" />
               : <Register
+                  isDisabled={isDisabled}
                   onRegister={handleRegister}
                 /> }
             </Route>
@@ -436,6 +284,12 @@ function App() {
               <NotFound />
             </Route>
           </Switch>
+          <InfoTooltip
+            onClose={closePopup}
+            isOpen={isInfoTooltipOpen}
+            image={infoTooltipImage}
+            status={infoTooltipStatus}
+      />
         </div>
     </CurrentUserContext.Provider>
 

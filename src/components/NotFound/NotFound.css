@@ -25,8 +25,10 @@
   line-height: 1.2;
 }
 
-.not-found__link {
+.not-found__button {
   margin: 0 auto 60px;
+  border: none;
+  background-color: #fff;
   color: #000;
   font-family: 'Inter', 'Arial', sans-serif;
   font-style: normal;
@@ -36,7 +38,7 @@
   text-decoration: none;
 }
 
-.not-found__link:hover {
+.not-found__button:hover {
   opacity: 0.6;
   cursor: pointer;
 }
@@ -48,7 +50,7 @@
   .not-found__title {
     margin: 408px auto 5px;
   }
-  .not-found__link {
+  .not-found__button {
     margin: 0 auto 222px;
   }
 }
@@ -65,7 +67,7 @@
     margin: 0 auto 284px;
     font-size: 12px;
   }
-  .not-found__link {
+  .not-found__button {
     margin: 0 auto 30px;
     font-size: 12px;
   }

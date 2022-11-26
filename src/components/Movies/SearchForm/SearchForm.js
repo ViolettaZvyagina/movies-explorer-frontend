@@ -6,10 +6,11 @@ import useFormWithValidation from '../../../hooks/UseFormWithValidation';
 function SearchForm({
   onSearch,
   input,
-  errоr,
+  setError,
   onCheckbox,
   isChecked,
 }) {
+
   const {
     isValid,
     inputValues,
@@ -26,7 +27,7 @@ function SearchForm({
     if (isValid) {
       onSearch(inputValues.search, isChecked);
     } else {
-      errоr('Введите ключевое слово')
+      setError('Введите ключевое слово');
     }
   }
 
