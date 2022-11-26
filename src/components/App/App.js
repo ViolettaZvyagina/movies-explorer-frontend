@@ -264,6 +264,10 @@ function App() {
                 onLogOut={handleLogout}
                 onUpdateProfile={handleUpdateProfile}
                 currentUser={currentUser}
+                isNavigationPopupOpen={handleNavigationPopupClick}
+                isOpen={isNavigationPopupOpen}
+                onClose={closePopup}
+                onOverlayClose={closePopupOnOverlay}
               />
             <Route path='/signup'>
               { isLoggedIn

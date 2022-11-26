@@ -9,7 +9,12 @@ function Profile({
   onLogOut,
   isLogged,
   onUpdateProfile,
-  currentUser}) {
+  currentUser,
+  isNavigationPopupOpen,
+  isOpen,
+  onClose,
+  onOverlayClose
+}) {
 
   const {
     isValid,
@@ -48,6 +53,10 @@ function Profile({
     <section className="profile">
       <Header
         isLogged={isLogged}
+        isNavigationPopupOpen={isNavigationPopupOpen}
+        isOpen={isOpen}
+        onClose={onClose}
+        onOverlayClose={onOverlayClose}
        />
       <main className="profile__content">
         <h2 className="profile__title">Привет, {currentUser.name}!</h2>
