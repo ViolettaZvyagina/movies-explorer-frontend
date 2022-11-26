@@ -121,8 +121,7 @@ class MainApi {
 };
 
 const mainApi = new MainApi({
-  //url:'https://api.zvyagina.diplom.nomoredomains.icu',
-  url:'http://localhost:4000',
+  url:'https://api.zvyagina.diplom.nomoredomains.icu',
   headers: {
     'Content-Type': 'application/json'
   }
