@@ -18,19 +18,13 @@ function SavedMovies({
   isLogged,
   setIsMoviesSaved,
   isLoading,
+  searchedSavedMovies,
+  setSearchedSavedMovies
 }) {
     const [isChecked, setIsChecked] = useState(false);
     const [error, setError] = useState('Нет сохранённых фильмов');
     const [foundSavedMovies, setFoundSavedMovies] = useState([]);
 
-    useEffect(() => {
-      setIsChecked(false);
-
-      const isMoviesSaved = JSON.parse(localStorage.getItem('movieSaved'));
-      if (isMoviesSaved) {
-        setIsMoviesSaved(isMoviesSaved);
-      }
-    }, [setIsMoviesSaved]);
 
   function handleSavedSearchSubmit(inputValue, isChecked) {
 
@@ -38,13 +32,13 @@ function SavedMovies({
       const foundMovies = isMoviesSaved.filter(data => {
         return data.nameRU.toLowerCase().includes(inputValue.toLowerCase());
       });
-        setIsMoviesSaved(foundMovies);
-        setFoundSavedMovies(foundMovies);
+        setSearchedSavedMovies(foundMovies);
+        //setFoundSavedMovies(foundMovies);
 
       if (isChecked) {
         const shortMovies = foundMovies.filter((data) => data.duration <= 40);
-         setIsMoviesSaved(shortMovies);
-         setFoundSavedMovies(shortMovies);
+          setSearchedSavedMovies(shortMovies);
+          //setFoundSavedMovies(shortMovies);
       } else {
         setError('Ничего не найдено');
       }
@@ -56,20 +50,16 @@ function SavedMovies({
 
   function handleSavedShortMovies(isChecked) {
     if (isChecked) {
-      const shortMoviesCards = isMoviesSaved.filter((data) => data.duration <= 40);
-      setIsMoviesSaved(shortMoviesCards);
-      if (!isMoviesSaved.length) {
-        setError('Ничего не найдено');
-    } if (!isChecked) {
-        if (foundSavedMovies.length) {
-          setIsMoviesSaved(foundSavedMovies);
-        } else {
+      const shortMoviesCards = searchedSavedMovies.filter((data) => data.duration <= 40);
+      setSearchedSavedMovies(shortMoviesCards);
+    }
+    if (!isChecked) {
             const isMoviesSaved = JSON.parse(localStorage.getItem('movieSaved'));
-            setIsMoviesSaved(isMoviesSaved);
+            setSearchedSavedMovies(isMoviesSaved);
+            console.log(isMoviesSaved)
         };
-      };
     };
-  };
+
 
   useEffect(() => {
     handleSavedShortMovies(isChecked)
@@ -107,6 +97,7 @@ function SavedMovies({
           cards={cards}
           isMoviesSaved={isMoviesSaved}
           onMoviesDelete={onMoviesDelete}
+          movies={searchedSavedMovies}
       /> )
       : <MoviesErrorBox
           error={error}

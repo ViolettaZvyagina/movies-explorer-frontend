@@ -26,6 +26,8 @@ function App() {
   const [isInfoTooltipOpen, setIsInfoTooltipOpen] = useState(false);
   const [infoTooltipStatus, setInfoTooltipStatus] = useState('');
   const [infoTooltipImage, setInfoTooltipImage] = useState({});
+  const [searchedSavedMovies, setSearchedSavedMovies] = useState(JSON.parse(localStorage.getItem('movieSaved')) || []);
+
   const history = useHistory();
 
   function handleNavigationPopupClick() {
@@ -212,6 +214,7 @@ function App() {
   };
 
 
+
   return (
     <CurrentUserContext.Provider value={currentUser}>
         <div className="page">
@@ -256,6 +259,8 @@ function App() {
                 onMoviesSaved={handleSavedMovies}
                 onMoviesDelete={handleDeleteMovies}
                 setIsMoviesSaved={setIsMoviesSaved}
+                searchedSavedMovies={searchedSavedMovies}
+                setSearchedSavedMovies={setSearchedSavedMovies}
               />
             <ProtectedRoute
                 component={Profile}

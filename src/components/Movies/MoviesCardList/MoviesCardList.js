@@ -9,6 +9,7 @@ function MoviesCardList({
   isMoviesSaved,
   onMoviesSaved,
   onMoviesDelete,
+  movies
 }) {
   const moviesRoute = useRouteMatch({ path: '/movies', exact: false });
   const savedMoviesRoute = useRouteMatch({ path: '/saved-movies', exact: false });
@@ -37,7 +38,7 @@ function MoviesCardList({
       )}
       {savedMoviesRoute && (
       <ul className='movies-card-list'>
-        { isMoviesSaved.map((movie) => <MoviesCard
+        { movies.map((movie) => <MoviesCard
           movie={movie}
           key={movie.id || movie._id}
           moviesRoute={moviesRoute}
