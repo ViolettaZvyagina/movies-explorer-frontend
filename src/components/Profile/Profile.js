@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import Header from '../Header/Header';
 import './Profile.css';
 import useFormWithValidation from '../../hooks/UseFormWithValidation';
-import { namePattern } from '../../utils/Сontans';
+import { namePattern } from '../../utils/inputValidation';
 
 function Profile({
   onLogOut,
@@ -92,6 +92,7 @@ function Profile({
               minLength="7"
               maxLength="30"
               required
+              pattern="^[\w]+@[a-zA-Z]+\.[a-zA-Z]{1,3}$"
               value={inputValues.email || ''}
               onChange={handleChange}
               disabled = {!isDisabled}

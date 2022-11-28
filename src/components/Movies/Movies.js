@@ -1,31 +1,43 @@
-import { useEffect, useState, useLayoutEffect } from 'react';
+import { useEffect, useState, useLayoutEffect, useContext } from 'react';
+import AppContext from '../../contexts/AppContext';
 import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
 import SearchForm from './SearchForm/SearchForm';
 import MoviesCardList from './MoviesCardList/MoviesCardList';
 import Preloader from './Preloader/Preloader/Preloader';
 import MoviesErrorBox from './MoviesErrorBox/MoviesErrorBox';
+import moviesApi from '../../utils/MoviesApi';
+import {
+  MoviesDuration,
+  CardsQuantitySmall,
+  CardsQuantityMedium,
+  CardsQuantityBig,
+  CardsMoreSmall,
+  CardsMoreSMedium,
+  CardsMoreSBig,
+  WidthSmall,
+  WidthMediumAndBig
+} from '../../utils/contans';
 
 function Movies({
   isNavigationPopupOpen,
   isOpen,
   onClose,
   onOverlayClose,
-  cards,
   setMovies,
   movieSearch,
   isLoading,
-  isMoviesSaved,
   onMoviesSaved,
-  onMoviesDelete,
   isLogged,
   setMovieSearch,
+  setIsLoading,
 }) {
   const width = handleWindowSize();
   const [input, setInput] = useState('');
   const [moreMovies, setMoreMovies] = useState(0);
   const [isChecked, setIsChecked] = useState(false);
   const [error, setError] = useState('Введите название фильма в поиск');
+  const {isMoviesSaved, cards, onMoviesDelete} = useContext(AppContext);
 
   function handleWindowSize() {
     const [size, setSize] = useState(0);
@@ -46,15 +58,15 @@ function Movies({
 
   useEffect(() => {
     function getMovies() {
-      if (width > 1200) {
-        setMovies(12);
-        setMoreMovies(3);
-      } else if (width <= 1200 && width > 760) {
-        setMovies(8);
-        setMoreMovies(2);
-      } else if (width <= 760) {
-        setMovies(5);
-        setMoreMovies(1);
+      if (width > WidthMediumAndBig) {
+        setMovies(CardsQuantityBig);
+        setMoreMovies(CardsMoreSBig);
+      } else if (width <= WidthMediumAndBig && width > WidthSmall) {
+        setMovies(CardsQuantityMedium);
+        setMoreMovies(CardsMoreSMedium);
+      } else if (width <= WidthSmall) {
+        setMovies(CardsQuantitySmall);
+        setMoreMovies(CardsMoreSmall);
       }
     }
     getMovies();
@@ -82,10 +94,11 @@ function Movies({
   }, []);
 
   function handleSearchSubmit(inputValue, isChecked) {
-
+    setIsLoading(true);
     const movies = JSON.parse(localStorage.getItem('movies'));
 
     try {
+      if (movies) {
       const foundMovies = movies.filter(data => {
         return data.nameRU.toLowerCase().includes(inputValue.toLowerCase());
       });
@@ -96,20 +109,31 @@ function Movies({
       setInput(inputValue);
 
       if (isChecked) {
-        const shortMovies = foundMovies.filter((data) => data.duration <= 40);
+        const shortMovies = foundMovies.filter((data) => data.duration <= MoviesDuration);
         setMovieSearch(shortMovies);
         localStorage.setItem('searchedMovies', JSON.stringify(foundMovies));
         localStorage.setItem('inputSearch', inputValue);
+      } else {
+        setError('Ничего не найдено');
       }
+    } else {
+      if(isLogged) {
+        moviesApi.getMovies()
+          .then((movies) => {
+            localStorage.setItem('movies', JSON.stringify(movies)); }) }
+    }
     } catch (err) {
       console.log(`Ошибка: ${err}`);
       setError('Во время запроса произошла ошибка. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз');
+  } finally {
+    setTimeout(()=> setIsLoading(false), 300);
   }
 };
 
+
 function handleShortMovies(isChecked) {
   if (isChecked) {
-    const shortMoviesCards = movieSearch.filter((data) => data.duration <= 40);
+    const shortMoviesCards = movieSearch.filter((data) => data.duration <= MoviesDuration);
     setMovieSearch(shortMoviesCards);
 
   } if (!isChecked) {

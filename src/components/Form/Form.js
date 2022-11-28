@@ -10,7 +10,8 @@ function Form({
   textButton,
   name,
   onSubmit,
-  isValid
+  isValid,
+  isLoading
 }) {
   return (
     <section className={`form form_type_${name}`} name={`${name}`}>
@@ -27,8 +28,8 @@ function Form({
           <button
             type="submit"
             aria-label="Регистрация"
-            disabled={!isValid}
-            className={`${!isValid ? "form__submit-button" : "form__submit-button-active"}`}
+            disabled={!isValid || isLoading}
+            className={`${!isValid || isLoading ? "form__submit-button" : "form__submit-button-active"}`}
             name={`${name}-button`}
             >
             { textButton }

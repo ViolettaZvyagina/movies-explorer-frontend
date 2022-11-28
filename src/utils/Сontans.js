@@ -1,1 +1,0 @@
-module.exports.namePattern = `[A-Za-zА-Яа-яЁё\\s-]+`;

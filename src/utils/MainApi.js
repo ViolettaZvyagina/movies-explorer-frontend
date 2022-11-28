@@ -122,7 +122,7 @@ class MainApi {
 
 const mainApi = new MainApi({
   url:'https://api.zvyagina.diplom.nomoredomains.icu',
- // url:'http://localhost:4000',
+  //url:'http://localhost:4000',
   headers: {
     'Content-Type': 'application/json'
   }

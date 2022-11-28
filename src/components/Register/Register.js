@@ -1,23 +1,20 @@
 import Form from '../Form/Form';
 import './Register.css';
-import { namePattern } from '../../utils/Сontans';
+import { namePattern } from '../../utils/inputValidation';
 import useFormWithValidation from '../../hooks/UseFormWithValidation';
 
-function Register({onRegister}) {
+function Register({onRegister, isLoading}) {
 
   const {
     isValid,
     inputValues,
     inputErrors,
     handleChange,
-    resetInputErrors
   } = useFormWithValidation({});
 
   function handleSubmit(e) {
     e.preventDefault();
     onRegister({...inputValues})
-    resetInputErrors();
-
   };
 
   return (
@@ -30,6 +27,7 @@ function Register({onRegister}) {
       name='register'
       onSubmit={handleSubmit}
       isValid={isValid}
+      isLoading={isLoading}
     >
 
       <label className="register__label" htmlFor="name-input">Имя</label>
@@ -45,6 +43,7 @@ function Register({onRegister}) {
         id="name-input"
         className="register__input register__input_type_name"
         placeholder="Имя"
+        disabled={isLoading}
       />
       <span className="register__input-error register__input-error_place_first" id="input-name-error">{!isValid && inputErrors.name}</span>
 
@@ -56,10 +55,12 @@ function Register({onRegister}) {
         type="email"
         name="email"
         value={inputValues.email || ''}
+        pattern="^[\w]+@[a-zA-Z]+\.[a-zA-Z]{1,3}$"
         onChange={handleChange}
         id="email-input"
         className="register__input register__input_type_email"
         placeholder="Email"
+        disabled={isLoading}
       />
       <span className="register__input-error register__input-error_place_second" id="input-name-error">{!isValid && inputErrors.email}</span>
 
@@ -71,6 +72,7 @@ function Register({onRegister}) {
         type="password"
         name="password"
         value={inputValues.password || ''}
+        disabled={isLoading}
         onChange={handleChange}
         id="password-input"
         className="register__input register__input_type_password"

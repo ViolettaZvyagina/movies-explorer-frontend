@@ -1,6 +1,7 @@
 import { Switch, Route, useHistory, Redirect } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import CurrentUserContext from '../../contexts/CurrentUserContext';
+import AppContext from '../../contexts/AppContext';
 import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
 import Main from '../Main/Main';
 import './App.css';
@@ -10,7 +11,6 @@ import NotFound from '../NotFound/NotFound';
 import Profile from '../Profile/Profile';
 import Register from '../Register/Register';
 import Login from '../Login/Login';
-import moviesApi from '../../utils/MoviesApi';
 import mainApi from '../../utils/MainApi';
 import InfoTooltip from '../InfoTooltip/InfoTooltip';
 
@@ -66,41 +66,6 @@ function App() {
 
   useEffect(() => {
     if(isLoggedIn) {
-      setIsLoading(true);
-      moviesApi.getMovies()
-        .then((movies) => {
-          localStorage.setItem('movies', JSON.stringify(movies));
-        })
-        .catch((error) => {
-          console.log(`Ошибка: ${error}`);
-        })
-        .finally(() => setIsLoading(false));
-    }
-  }, [isLoggedIn, setIsLoading]);
-
-  function handleRegister({name, email, password}) {
-    mainApi.register({name, email, password})
-    .then((data) => {
-      if(data) {
-        setInfoTooltipImage({
-          imageType: 'imageSuccess'});
-        setInfoTooltipStatus('Пользователь успешно зарегистрирован');
-        handleInfoTooltipOpen();
-        history.push('/signin');
-      }
-    })
-    .catch((error) => {
-      console.log(`Ошибка: ${error}`);
-      setIsDisabled(true);
-      setInfoTooltipImage({
-        imageType: 'imageError'});
-      setInfoTooltipStatus('Ошибка регистрации. Введены некорректные данные');
-      handleInfoTooltipOpen();
-    })
-  };
-
-  useEffect(() => {
-    if(isLoggedIn) {
       Promise.all([mainApi.getUserInfo(), mainApi.getSavedMovies()])
         .then(([user, movieInfo]) => {
           setCurrentUser(user);
@@ -109,29 +74,57 @@ function App() {
         })
         .catch((error) => {
           console.log(`Ошибка: ${error}`);
+            if (error === 401) {
+              history.push('/');
+              localStorage.clear();
+              setIsLoggedIn(false);
+            }
         })
     }
   }, [isLoggedIn]);
 
+  function handleRegister({name, email, password}) {
+    setIsLoading(true);
+    mainApi.register({name, email, password})
+    .then((data) => {
+      if(data) {
+        handleLogin({email, password});
+        setInfoTooltipImage({
+          imageType: 'imageSuccess'});
+        setInfoTooltipStatus('Пользователь успешно зарегистрирован');
+        handleInfoTooltipOpen();
+      }
+    })
+    .catch((error) => {
+      console.log(`Ошибка: ${error}`);
+      setInfoTooltipImage({
+        imageType: 'imageError'});
+      setInfoTooltipStatus('Ошибка регистрации. Введены некорректные данные');
+      handleInfoTooltipOpen();
+    })
+    .finally(() => setIsLoading(false));
+  };
+
   function handleLogin({email, password}) {
+    setIsLoading(true);
     mainApi.authorize({email, password})
       .then((data) => {
-        setIsLoggedIn(() => {
+        if(data) {
+          setIsLoggedIn(true)
           localStorage.setItem('isloggedIn', true);
           history.push('/movies');
-          return true;
-        });
+        }
       })
       .catch((err) => {
         console.log(`Ошибка: ${err}`);
-        setIsDisabled(true);
         setInfoTooltipImage({
           imageType: 'imageError'});
         setInfoTooltipStatus('Ошибка входа. Введены некорректные данные');
         handleInfoTooltipOpen();
-        console.log(`Ошибка: ${err}`);
       })
+      .finally(() => setIsLoading(false))
   };
+
 
   function handleLogout() {
     mainApi.logOut()
@@ -176,21 +169,27 @@ function App() {
         setInfoTooltipStatus('Ошибка обновления профиля. Введите корректные данные');
         handleInfoTooltipOpen();
       })
-    }
+    };
 
   function handleGetSavedMovies() {
     mainApi.getSavedMovies()
     .then((searchedMovies) => {
       setIsMoviesSaved(searchedMovies);
-      localStorage.setItem('movieSaved', JSON.stringify(searchedMovies))
+      localStorage.setItem('movieSaved', JSON.stringify(searchedMovies));
     })
     .catch((error) => {
       console.log(`Ошибка: ${error}`);
+      if (error === 401) {
+        history.push('/');
+        localStorage.clear();
+        setIsLoggedIn(false);
+      }
     });
   };
 
   function handleSavedMovies(data) {
-    const isMovieSaved = isMoviesSaved.some(i => i.movieId === data.id);
+    const movieSaved = JSON.parse(localStorage.getItem('movieSaved'));
+    const isMovieSaved = movieSaved.some(i => i.movieId === data.id);
     mainApi.handleSavedMovies(data, isMovieSaved)
       .then((myMovie) => {
         handleGetSavedMovies()
@@ -199,24 +198,40 @@ function App() {
       })
       .catch((error) => {
         console.log(`Ошибка: ${error}`);
+        if (error === 401) {
+          history.push('/');
+          localStorage.clear();
+          setIsLoggedIn(false);
+        }
       })
   };
 
   function handleDeleteMovies(data) {
     mainApi.deleteMovies(data)
       .then(() => {
-        handleGetSavedMovies()
-        setIsMoviesSaved((item) => item.filter((movie) => movie.movieId !== movie.id));
-      })
+        const movieSaved = JSON.parse(localStorage.getItem('movieSaved'));
+        const movieDeleted = movieSaved.filter(savedCard => data._id !== savedCard._id)
+        setIsMoviesSaved(movieDeleted);
+        localStorage.setItem('movieSaved', JSON.stringify(movieDeleted));
+        const newSavedMovies = searchedSavedMovies.filter((movie) => data._id !== movie._id)
+        setSearchedSavedMovies(newSavedMovies);
+        localStorage.setItem('newSavedMovies', JSON.stringify(newSavedMovies));
+  })
       .catch((error) => {
         console.log(`Ошибка: ${error}`);
       })
   };
 
 
-
   return (
     <CurrentUserContext.Provider value={currentUser}>
+      <AppContext.Provider
+        value={{
+          isMoviesSaved: isMoviesSaved,
+          cards: movies,
+          onMoviesDelete: handleDeleteMovies,
+
+        }}>
         <div className="page">
           <Switch>
             <Route exact path="/">
@@ -236,28 +251,23 @@ function App() {
                 onClose={closePopup}
                 onOverlayClose={closePopupOnOverlay}
                 isOpen={isNavigationPopupOpen}
-                cards={movies}
                 setMovies={setMovies}
                 setMovieSearch={setMovieSearch}
                 isLoading={isLoading}
+                setIsLoading={setIsLoading}
                 movieSearch={movieSearch}
-                isMoviesSaved={isMoviesSaved}
                 onMoviesSaved={handleSavedMovies}
-                onMoviesDelete={handleDeleteMovies}
                />
             <ProtectedRoute
+                path="/saved-movies"
                 component={SavedMovies}
                 isLogged={isLoggedIn}
-                path="/saved-movies"
                 isNavigationPopupOpen={handleNavigationPopupClick}
                 onClose={closePopup}
                 onOverlayClose={closePopupOnOverlay}
                 isOpen={isNavigationPopupOpen}
                 isLoading={isLoading}
-                cards={movies}
-                isMoviesSaved={isMoviesSaved}
-                onMoviesSaved={handleSavedMovies}
-                onMoviesDelete={handleDeleteMovies}
+                setIsLoading={setIsLoading}
                 setIsMoviesSaved={setIsMoviesSaved}
                 searchedSavedMovies={searchedSavedMovies}
                 setSearchedSavedMovies={setSearchedSavedMovies}
@@ -279,6 +289,7 @@ function App() {
               ? <Redirect to="/profile" />
               : <Register
                   onRegister={handleRegister}
+                  isLoading={isLoading}
                 /> }
             </Route>
             <Route path='/signin'>
@@ -286,6 +297,7 @@ function App() {
               ? <Redirect to="/profile" />
               :  <Login
                     onLogin={handleLogin}
+                    isLoading={isLoading}
                   /> }
             </Route>
             <Route path='*'>
@@ -297,8 +309,9 @@ function App() {
             isOpen={isInfoTooltipOpen}
             image={infoTooltipImage}
             status={infoTooltipStatus}
-      />
+          />
         </div>
+        </AppContext.Provider>
     </CurrentUserContext.Provider>
 
   );

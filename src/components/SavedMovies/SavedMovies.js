@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
+import AppContext from '../../contexts/AppContext';
 import Header from '../Header/Header';
 import MoviesCardList from '../Movies/MoviesCardList/MoviesCardList';
 import SearchForm from '../Movies/SearchForm/SearchForm';
@@ -12,39 +13,39 @@ function SavedMovies({
   onClose,
   onOverlayClose,
   movieCards,
-  cards,
-  isMoviesSaved,
-  onMoviesDelete,
   isLogged,
-  setIsMoviesSaved,
   isLoading,
   searchedSavedMovies,
-  setSearchedSavedMovies
+  setSearchedSavedMovies,
+  setIsLoading
 }) {
     const [isChecked, setIsChecked] = useState(false);
     const [error, setError] = useState('Нет сохранённых фильмов');
     const [foundSavedMovies, setFoundSavedMovies] = useState([]);
-
+    const {isMoviesSaved, cards, onMoviesDelete} = useContext(AppContext);
 
   function handleSavedSearchSubmit(inputValue, isChecked) {
 
+    setIsLoading(true);
     try {
-      const foundMovies = isMoviesSaved.filter(data => {
+      const movieSaved = JSON.parse(localStorage.getItem('movieSaved'));
+      const foundMovies = movieSaved.filter(data => {
         return data.nameRU.toLowerCase().includes(inputValue.toLowerCase());
       });
         setSearchedSavedMovies(foundMovies);
-        //setFoundSavedMovies(foundMovies);
+        setFoundSavedMovies(foundMovies);
 
       if (isChecked) {
         const shortMovies = foundMovies.filter((data) => data.duration <= 40);
           setSearchedSavedMovies(shortMovies);
-          //setFoundSavedMovies(shortMovies);
       } else {
         setError('Ничего не найдено');
       }
     } catch (err) {
       console.log(`Ошибка: ${err}`);
       setError('Во время запроса произошла ошибка. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз');
+    } finally {
+      setTimeout(()=> setIsLoading(false), 300);
     }
   };
 
@@ -53,12 +54,14 @@ function SavedMovies({
       const shortMoviesCards = searchedSavedMovies.filter((data) => data.duration <= 40);
       setSearchedSavedMovies(shortMoviesCards);
     }
-    if (!isChecked) {
-            const isMoviesSaved = JSON.parse(localStorage.getItem('movieSaved'));
-            setSearchedSavedMovies(isMoviesSaved);
-            console.log(isMoviesSaved)
-        };
+    if (!isChecked && foundSavedMovies.length) {
+      setSearchedSavedMovies(foundSavedMovies);
+    }
+    if (!isChecked && !foundSavedMovies.length) {
+      const movieSaved = JSON.parse(localStorage.getItem('movieSaved'));
+      setSearchedSavedMovies(movieSaved);
     };
+  };
 
 
   useEffect(() => {
@@ -89,7 +92,7 @@ function SavedMovies({
         onCheckbox={handleCheckSaved}
         isChecked={isChecked}
       />
-      { isMoviesSaved.length
+      { searchedSavedMovies.length
       ? ( isLoading
         ? <Preloader />
         : <MoviesCardList

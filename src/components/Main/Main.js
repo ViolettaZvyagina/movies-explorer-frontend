@@ -15,6 +15,7 @@ function Main({
   onClose,
   onOverlayClose
 }) {
+
   return (
       <main className="content">
         <Header

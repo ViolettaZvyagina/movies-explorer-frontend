@@ -2,20 +2,18 @@ import Form from '../Form/Form';
 import '../Register/Register.css';
 import useFormWithValidation from '../../hooks/UseFormWithValidation';
 
-function Login({onLogin, isDisabled}) {
+function Login({onLogin, isLoading}) {
 
   const {
     isValid,
     inputValues,
     inputErrors,
     handleChange,
-    resetInputErrors
   } = useFormWithValidation({});
 
   function handleSubmit(e) {
     e.preventDefault();
     onLogin({...inputValues});
-    resetInputErrors();
   };
 
   return (
@@ -28,6 +26,7 @@ function Login({onLogin, isDisabled}) {
       name='login'
       onSubmit={handleSubmit}
       isValid={isValid}
+      isLoading={isLoading}
     >
 
       <label className="register__label" htmlFor="email-input">Email</label>
@@ -37,9 +36,10 @@ function Login({onLogin, isDisabled}) {
         maxLength="30"
         type="email"
         name="email"
+        pattern="^[\w]+@[a-zA-Z]+\.[a-zA-Z]{1,3}$"
         value={inputValues.email || ''}
         onChange={handleChange}
-        disabled={isDisabled}
+        disabled={isLoading}
         id="email-input"
         className="register__input login__input_type_email"
         placeholder="Email"
@@ -55,7 +55,7 @@ function Login({onLogin, isDisabled}) {
         name="password"
         value={inputValues.password || ''}
         onChange={handleChange}
-        disabled={isDisabled}
+        disabled={isLoading}
         id="password-input"
         className="register__input login__input_type_password"
         placeholder="Пароль"
