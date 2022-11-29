@@ -125,7 +125,7 @@ function Movies({
       console.log(`Ошибка: ${err}`);
       setError('Во время запроса произошла ошибка. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз');
   } finally {
-    setTimeout(()=> setIsLoading(false), 300);
+    setTimeout(()=> setIsLoading(false), 5000);
   }
 };*/
 
@@ -181,7 +181,7 @@ function handleSearchSubmit(inputValue, isChecked) {
     console.log(`Ошибка: ${err}`);
     setError('Во время запроса произошла ошибка. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз');
 } finally {
-  setTimeout(()=> setIsLoading(false), 300);
+  setTimeout(()=> setIsLoading(false), 3000);
 }
 };
 
@@ -217,41 +217,40 @@ function handleCheck(e) {
   }
 }
 
-  return (
-    <main className="content">
-      <Header
-        isNavigationPopupOpen={isNavigationPopupOpen}
-        isOpen={isOpen}
-        onClose={onClose}
-        onOverlayClose={onOverlayClose}
-        isLogged={isLogged}
+return (
+  <main className="content">
+    <Header
+      isNavigationPopupOpen={isNavigationPopupOpen}
+      isOpen={isOpen}
+      onClose={onClose}
+      onOverlayClose={onOverlayClose}
+      isLogged={isLogged}
+    />
+    <SearchForm
+      input={input}
+      setError={setError}
+      onSearch={handleSearchSubmit}
+      onCheckbox={handleCheck}
+      isChecked={isChecked}
+    />
+    { movieSearch.length
+    ? ( isLoading
+      ? <Preloader />
+      : <MoviesCardList
+          searchMovie={movieSearch}
+          cards={cards}
+          isLoading={isLoading}
+          moviesMore={handleClickMoreCards}
+          isMoviesSaved={isMoviesSaved}
+          onMoviesSaved={onMoviesSaved}
+          onMoviesDelete={onMoviesDelete}
+        /> )
+    : <MoviesErrorBox
+        error={error}
       />
-      <SearchForm
-        input={input}
-        setError={setError}
-        onSearch={handleSearchSubmit}
-        onCheckbox={handleCheck}
-        isChecked={isChecked}
-      />
-      { movieSearch.length
-      ? ( isLoading
-        ? <Preloader />
-        : <MoviesCardList
-            searchMovie={movieSearch}
-            cards={cards}
-            isLoading={isLoading}
-            moviesMore={handleClickMoreCards}
-            isMoviesSaved={isMoviesSaved}
-            onMoviesSaved={onMoviesSaved}
-            onMoviesDelete={onMoviesDelete}
-          /> )
-      : <MoviesErrorBox
-          error={error}
-        />
-      }
-      <Footer />
-    </main>
-  );
+    }
+    <Footer />
+  </main>
+);
 }
-
 export default Movies;
