@@ -92,45 +92,7 @@ function Movies({
     }
   }, []);
 
-  /*function handleSearchSubmit(inputValue, isChecked) {
-    setIsLoading(true);
-    const movies = JSON.parse(localStorage.getItem('movies'));
-
-    try {
-      if (movies) {
-      const foundMovies = movies.filter(data => {
-        return data.nameRU.toLowerCase().includes(inputValue.toLowerCase());
-      });
-
-      localStorage.setItem('searchedMovies', JSON.stringify(foundMovies));
-      setMovieSearch(foundMovies);
-      localStorage.setItem('inputSearch', inputValue);
-      setInput(inputValue);
-
-      if (isChecked) {
-        const shortMovies = foundMovies.filter((data) => data.duration <= MoviesDuration);
-        setMovieSearch(shortMovies);
-        localStorage.setItem('searchedMovies', JSON.stringify(foundMovies));
-        localStorage.setItem('inputSearch', inputValue);
-      } else {
-        setError('Ничего не найдено');
-      }
-      } else {
-      if(isLogged) {
-        moviesApi.getMovies()
-          .then((movies) => {
-            localStorage.setItem('movies', JSON.stringify(movies)); }) }
-    }
-    } catch (err) {
-      console.log(`Ошибка: ${err}`);
-      setError('Во время запроса произошла ошибка. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз');
-  } finally {
-    setTimeout(()=> setIsLoading(false), 5000);
-  }
-};*/
-
 function handleSearchSubmit(inputValue, isChecked) {
-  setIsLoading(true);
   const movies = JSON.parse(localStorage.getItem('movies'));
 
   try {
@@ -154,6 +116,7 @@ function handleSearchSubmit(inputValue, isChecked) {
     }
     } else {
     if(isLogged && !movies) {
+      setIsLoading(true);
       moviesApi.getMovies()
         .then((movies) => {
           localStorage.setItem('movies', JSON.stringify(movies));
@@ -233,22 +196,22 @@ return (
       onCheckbox={handleCheck}
       isChecked={isChecked}
     />
-    { movieSearch.length
-    ? ( isLoading
+    { isLoading
       ? <Preloader />
-      : <MoviesCardList
-          searchMovie={movieSearch}
-          cards={cards}
-          isLoading={isLoading}
-          moviesMore={handleClickMoreCards}
-          isMoviesSaved={isMoviesSaved}
-          onMoviesSaved={onMoviesSaved}
-          onMoviesDelete={onMoviesDelete}
-        /> )
-    : <MoviesErrorBox
-        error={error}
-      />
-    }
+      : ( movieSearch.length
+        ? <MoviesCardList
+            searchMovie={movieSearch}
+            cards={cards}
+            isLoading={isLoading}
+            moviesMore={handleClickMoreCards}
+            isMoviesSaved={isMoviesSaved}
+            onMoviesSaved={onMoviesSaved}
+            onMoviesDelete={onMoviesDelete}
+          />
+        : <MoviesErrorBox
+            error={error}
+        />)
+      }
     <Footer />
   </main>
 );
