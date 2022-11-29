@@ -1,0 +1,155 @@
+.form {
+  max-width: 1280px;
+  background-color: #fff;
+  margin: 0 auto;
+  height: 100vh;
+}
+
+.form__container {
+  max-width: 396px;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.form__inputs-container {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.form__button-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.form__logo {
+  width: 38px;
+  height: 38px;
+  background-image: url("../../images/Header/header-logo.svg");
+  background-size: cover;
+  background-position: center;
+  text-decoration: none;
+  margin: 70px 0 0;
+}
+
+.form__title {
+  color: #000;
+  font-family: 'Inter', 'Arial', sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 1.2;
+  margin: 40px 0;
+}
+
+.form__submit-button {
+  margin: 0 0 16px;
+  height: 45px;
+  background-color: #fff;
+  border: #aaa0a0 1px solid;
+  color: #aaa0a0;
+  font-family: 'Inter', 'Arial', sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 1.2;
+  text-align: center;
+  border-radius: 3px;
+  padding: 0;
+}
+
+.form__submit-button-active {
+  margin: 0 0 16px;
+  height: 45px;
+  background-color: #000;
+  color: #fff;
+  font-family: 'Inter', 'Arial', sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 1.2;
+  text-align: center;
+  border-radius: 3px;
+  padding: 0;
+  border: none;
+}
+
+.form__text {
+  color: #A0A0A0;
+  font-family: 'Inter', 'Arial', sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.2;
+  text-align: center;
+  margin: 0 6px 0 0;
+  padding: 0;
+}
+
+.form__link {
+  color: #000;
+  font-family: 'Inter', 'Arial', sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.2;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  text-decoration: none;
+}
+
+.form__logo:hover, .form__submit-button-active:hover, .form__link:hover {
+  opacity: 0.6;
+  cursor: pointer;
+}
+
+.form__info {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin-bottom: 70px;
+}
+
+@media screen and (max-width: 1200px) {
+  .form {
+    max-width: 768px;
+  }
+  .form__logo {
+    margin: 232px 0 0;
+  }
+}
+
+@media screen and (max-width: 760px) {
+  .form {
+    max-width: 320px;
+  }
+  .form__container {
+    max-width: 260px;
+  }
+  .form__logo {
+    margin: 56px auto 0;
+  }
+  .form__info{
+    margin-bottom: 30px;
+  }
+  .form__title {
+    margin: 50px auto 80px;
+  }
+  .form__submit-button {
+    font-size: 12px;
+  }
+  .form__submit-button-active {
+    font-size: 12px;
+  }
+  .form__text {
+    font-size: 12px;
+  }
+  .form__link {
+    font-size: 12px;
+  }
+}

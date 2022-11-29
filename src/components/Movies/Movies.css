@@ -1,0 +1,31 @@
+.movies__error-box {
+  max-width: 1140px;
+  width: 100%;
+  margin: 20px auto 0;
+  display: flex;
+}
+
+.movies__error-text {
+  color: #000;
+  font-family: 'Inter', 'Arial', sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 1.2;
+  margin: 0 auto;
+}
+
+@media screen and (max-width: 1200px) {
+  .movies__error-box {
+    max-width: 708px;
+  }
+}
+
+@media screen and (max-width: 760px) {
+  .movies__error-box {
+    max-width: 300px;
+  }
+  .movies__error-text {
+    font-size: 12px;
+  }
+}
