@@ -13,7 +13,6 @@ import {
   CardsQuantityMedium,
   CardsQuantityBig,
   CardsMoreSmall,
-  CardsMoreSMedium,
   CardsMoreSBig,
   WidthSmall,
   WidthMediumAndBig
@@ -63,7 +62,7 @@ function Movies({
         setMoreMovies(CardsMoreSBig);
       } else if (width <= WidthMediumAndBig && width > WidthSmall) {
         setMovies(CardsQuantityMedium);
-        setMoreMovies(CardsMoreSMedium);
+        setMoreMovies(CardsMoreSmall);
       } else if (width <= WidthSmall) {
         setMovies(CardsQuantitySmall);
         setMoreMovies(CardsMoreSmall);
@@ -93,7 +92,7 @@ function Movies({
     }
   }, []);
 
-  function handleSearchSubmit(inputValue, isChecked) {
+  /*function handleSearchSubmit(inputValue, isChecked) {
     setIsLoading(true);
     const movies = JSON.parse(localStorage.getItem('movies'));
 
@@ -116,7 +115,7 @@ function Movies({
       } else {
         setError('Ничего не найдено');
       }
-    } else {
+      } else {
       if(isLogged) {
         moviesApi.getMovies()
           .then((movies) => {
@@ -128,6 +127,62 @@ function Movies({
   } finally {
     setTimeout(()=> setIsLoading(false), 300);
   }
+};*/
+
+function handleSearchSubmit(inputValue, isChecked) {
+  setIsLoading(true);
+  const movies = JSON.parse(localStorage.getItem('movies'));
+
+  try {
+    if (movies) {
+    const foundMovies = movies.filter(data => {
+      return data.nameRU.toLowerCase().includes(inputValue.toLowerCase());
+    });
+
+    localStorage.setItem('searchedMovies', JSON.stringify(foundMovies));
+    setMovieSearch(foundMovies);
+    localStorage.setItem('inputSearch', inputValue);
+    setInput(inputValue);
+
+    if (isChecked) {
+      const shortMovies = foundMovies.filter((data) => data.duration <= MoviesDuration);
+      setMovieSearch(shortMovies);
+      localStorage.setItem('searchedMovies', JSON.stringify(foundMovies));
+      localStorage.setItem('inputSearch', inputValue);
+    } else {
+      setError('Ничего не найдено');
+    }
+    } else {
+    if(isLogged && !movies) {
+      moviesApi.getMovies()
+        .then((movies) => {
+          localStorage.setItem('movies', JSON.stringify(movies));
+          const foundMovies = movies.filter(data => {
+            return data.nameRU.toLowerCase().includes(inputValue.toLowerCase());
+          });
+
+          localStorage.setItem('searchedMovies', JSON.stringify(foundMovies));
+          setMovieSearch(foundMovies);
+          localStorage.setItem('inputSearch', inputValue);
+          setInput(inputValue);
+
+          if (isChecked) {
+            const shortMovies = foundMovies.filter((data) => data.duration <= MoviesDuration);
+            setMovieSearch(shortMovies);
+            localStorage.setItem('searchedMovies', JSON.stringify(foundMovies));
+            localStorage.setItem('inputSearch', inputValue);
+          } else {
+            setError('Ничего не найдено');
+          }
+        })
+        }
+  }
+  } catch (err) {
+    console.log(`Ошибка: ${err}`);
+    setError('Во время запроса произошла ошибка. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз');
+} finally {
+  setTimeout(()=> setIsLoading(false), 300);
+}
 };
 
 

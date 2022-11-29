@@ -134,6 +134,7 @@ function App() {
       localStorage.removeItem('isloggedIn');
       localStorage.removeItem('searchedMovies');
       localStorage.removeItem('movieSaved');
+      localStorage.removeItem('movies')
       localStorage.removeItem('inputSearch');
       localStorage.removeItem('checkbox');
       setMovieSearch([]);
